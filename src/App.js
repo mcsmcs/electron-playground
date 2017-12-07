@@ -1,11 +1,27 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Example from './components/Example/Example';
 import { Button, Grid } from 'semantic-ui-react'
+// const ipcRenderer = window.ipcRenderer;
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      message: ''
+    };
+  }
+
+  handleClick = () => {
+    const response = window.ipcRenderer.sendSync('sync-message', 'ping');
+    console.log(response);
+    this.setState({ message: response });
+  }
+
   render() {
+    const { message } = this.state;
+
     return (
       <div className='App-base'>
         <Grid columns={16} centered>
@@ -14,8 +30,8 @@ class App extends Component {
               <Example />
             </Grid.Column>
             <Grid.Column className='red' width={8}>
-              <Button>
-                Test Button
+              <Button onClick={this.handleClick}>
+              Test Button {message && message}
               </Button>
             </Grid.Column>
           </Grid.Row>

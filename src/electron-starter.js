@@ -5,7 +5,7 @@ const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 
-const ipc = electron.ipcMain;
+const ipcMain = electron.ipcMain;
 const Menu = electron.Menu;
 const Tray = electron.Tray;
 
@@ -13,7 +13,12 @@ const Tray = electron.Tray;
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 function createWindow() {
-  mainWindow = new BrowserWindow({ width: 800, height: 600 });
+  mainWindow = new BrowserWindow({
+    width: 800, height: 600,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js')
+    }
+  });
 
   const startUrl = process.env.ELECTRON_START_URL || url.format({
     pathname: path.join(__dirname, '/../build/index.html'),
@@ -50,6 +55,11 @@ function setupIcon(){
 app.on('ready', function(){
   createWindow();
   setupIcon();
+
+  ipcMain.on('sync-message', (event, arg) => {
+    console.log(arg);  // prints "ping"
+    event.returnValue = 'pong';
+  });
 });
 
 // Quit when all windows are closed.
