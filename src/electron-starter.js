@@ -54,7 +54,7 @@ function setupIcon(){
 // Some APIs can only be used after this event occurs.
 app.on('ready', function(){
   createWindow();
-  setupIcon();
+  // setupIcon();
 
   ipcMain.on('sync-message', (event, arg) => {
     console.log(arg);  // prints "ping"
